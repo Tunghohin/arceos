@@ -1,7 +1,9 @@
 mod apic;
 mod boot;
 mod dtables;
-mod uart16550;
+//mod uart16550;
+mod ps2_controller;
+mod vga_buffer;
 
 pub mod mem;
 pub mod misc;
@@ -16,7 +18,12 @@ pub mod irq {
 }
 
 pub mod console {
-    pub use super::uart16550::*;
+    //pub use super::uart16550::*;
+    pub use super::vga_buffer::*;
+}
+
+pub mod keyboard {
+    pub use super::ps2_controller::*;
 }
 
 extern "C" {
@@ -37,7 +44,8 @@ unsafe extern "C" fn rust_entry(magic: usize, _mbi: usize) {
     if magic == self::boot::MULTIBOOT_BOOTLOADER_MAGIC {
         crate::mem::clear_bss();
         crate::cpu::init_primary(current_cpu_id());
-        self::uart16550::init();
+        //self::uart16550::init_early();
+        self::console::init_early();
         self::dtables::init_primary();
         self::time::init_early();
         rust_main(current_cpu_id(), 0);
@@ -56,8 +64,10 @@ unsafe extern "C" fn rust_entry_secondary(magic: usize) {
 
 /// Initializes the platform devices for the primary CPU.
 pub fn platform_init() {
+    self::console::init();
     self::apic::init_primary();
     self::time::init_primary();
+    self::keyboard::init();
 }
 
 /// Initializes the platform devices for secondary CPUs.

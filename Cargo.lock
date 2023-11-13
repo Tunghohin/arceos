@@ -379,10 +379,12 @@ dependencies = [
  "handler_table",
  "kernel_guard",
  "lazy_init",
+ "lazy_static",
  "log",
  "memory_addr",
  "page_table",
  "page_table_entry",
+ "pc-keyboard",
  "percpu",
  "ratio",
  "raw-cpuid 11.0.1",
@@ -423,6 +425,8 @@ dependencies = [
  "chrono",
  "crate_interface",
  "log",
+ "num-derive",
+ "num-traits",
  "spinlock",
 ]
 
@@ -1285,6 +1289,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "num-derive"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "876a53fff98e03a936a674b29568b0e605f06b29372c2489ff4de23f1949743d"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
 name = "num-traits"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1339,6 +1354,12 @@ name = "paste"
 version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "de3145af08024dea9fa9914f381a17b8fc6034dfb00f3a84013f7ff43f29ed4c"
+
+[[package]]
+name = "pc-keyboard"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed089a1fbffe3337a1a345501c981f1eb1e47e69de5a40e852433e12953c3174"
 
 [[package]]
 name = "peeking_take_while"

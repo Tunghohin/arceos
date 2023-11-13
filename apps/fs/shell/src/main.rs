@@ -48,6 +48,11 @@ fn main() {
 
     let mut buf = [0; MAX_CMD_LEN];
     let mut cursor = 0;
+
+    pinfo!("info test");
+    pdev!("dev test");
+    pdebug!("debug test");
+
     cmd::run_cmd("help".as_bytes());
     print_prompt();
 

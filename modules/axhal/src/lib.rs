@@ -28,6 +28,7 @@
 #![feature(asm_const)]
 #![feature(naked_functions)]
 #![feature(const_maybe_uninit_zeroed)]
+#![feature(const_mut_refs)]
 #![feature(const_option)]
 #![feature(doc_auto_cfg)]
 
@@ -62,6 +63,10 @@ pub mod console {
             putchar(*c);
         }
     }
+}
+
+pub mod keyboard {
+    pub use super::platform::keyboard::*;
 }
 
 /// Miscellaneous operation, e.g. terminate the system.
