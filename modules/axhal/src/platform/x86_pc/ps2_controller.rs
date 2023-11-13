@@ -10,6 +10,128 @@ const KEYBOARD_COMMAND: u16 = 0x64;
 
 const KEYBOARD_IRQ: u16 = 0x21;
 
+const KBD_US_UPPER: [Option<char>; 58] = [
+    None,
+    None,
+    Some('!'),
+    Some('@'),
+    Some('#'),
+    Some('$'),
+    Some('%'),
+    Some('^'),
+    Some('&'),
+    Some('*'),
+    Some('('),
+    Some(')'),
+    Some('_'),
+    Some('+'),
+    None,       //backspace
+    Some('\t'), //tab
+    Some('Q'),
+    Some('W'),
+    Some('E'),
+    Some('R'),
+    Some('T'),
+    Some('Y'),
+    Some('U'),
+    Some('I'),
+    Some('O'),
+    Some('P'),
+    Some('{'),
+    Some('}'),
+    Some('\n'), // enter
+    None,       // left ctrl
+    Some('A'),
+    Some('S'),
+    Some('D'),
+    Some('F'),
+    Some('G'),
+    Some('H'),
+    Some('J'),
+    Some('K'),
+    Some('L'),
+    Some(':'),
+    Some('"'),
+    Some('~'),
+    None, //left shift
+    Some('|'),
+    Some('Z'),
+    Some('X'),
+    Some('C'),
+    Some('V'),
+    Some('B'),
+    Some('N'),
+    Some('M'),
+    Some('<'),
+    Some('>'),
+    Some('?'),
+    None, //right shift
+    None,
+    None,      //left alt
+    Some(' '), //space
+];
+
+const KBD_US_LOWER: [Option<char>; 58] = [
+    None,
+    None,
+    Some('1'),
+    Some('2'),
+    Some('3'),
+    Some('4'),
+    Some('5'),
+    Some('6'),
+    Some('7'),
+    Some('8'),
+    Some('9'),
+    Some('0'),
+    Some('-'),
+    Some('+'),
+    None,       //backspace
+    Some('\t'), //tab
+    Some('q'),
+    Some('w'),
+    Some('e'),
+    Some('r'),
+    Some('t'),
+    Some('y'),
+    Some('u'),
+    Some('i'),
+    Some('o'),
+    Some('p'),
+    Some('['),
+    Some(']'),
+    Some('\n'), // enter
+    None,       // left ctrl
+    Some('a'),
+    Some('s'),
+    Some('d'),
+    Some('f'),
+    Some('g'),
+    Some('h'),
+    Some('j'),
+    Some('k'),
+    Some('l'),
+    Some(';'),
+    Some('\''),
+    Some('`'),
+    None, //left shift
+    Some('\\'),
+    Some('z'),
+    Some('x'),
+    Some('c'),
+    Some('v'),
+    Some('b'),
+    Some('n'),
+    Some('m'),
+    Some(','),
+    Some('.'),
+    Some('/'),
+    None, //right shift
+    None,
+    None,      //left alt
+    Some(' '), //space
+];
+
 struct RingBuffer {
     head: usize,
     tail: usize,
@@ -82,354 +204,14 @@ lazy_static! {
 
 fn decode(scancode: u8) -> Option<char> {
     let is_shifted = KEYBOARD.lock().is_shifted();
+    let is_capslock = KEYBOARD.lock().is_capslock();
     match scancode {
-        0x02 => {
-            if is_shifted {
-                Some('!')
+        0..=0x39 => {
+            if is_shifted ^ is_capslock {
+                KBD_US_UPPER[scancode as usize]
             } else {
-                Some('1')
+                KBD_US_LOWER[scancode as usize]
             }
-        }
-        0x03 => {
-            if is_shifted {
-                Some('@')
-            } else {
-                Some('2')
-            }
-        }
-        0x04 => {
-            if is_shifted {
-                Some('#')
-            } else {
-                Some('3')
-            }
-        }
-        0x05 => {
-            if is_shifted {
-                Some('$')
-            } else {
-                Some('4')
-            }
-        }
-        0x06 => {
-            if is_shifted {
-                Some('%')
-            } else {
-                Some('5')
-            }
-        }
-        0x07 => {
-            if is_shifted {
-                Some('^')
-            } else {
-                Some('6')
-            }
-        }
-        0x08 => {
-            if is_shifted {
-                Some('&')
-            } else {
-                Some('7')
-            }
-        }
-        0x09 => {
-            if is_shifted {
-                Some('*')
-            } else {
-                Some('8')
-            }
-        }
-        0x0a => {
-            if is_shifted {
-                Some('(')
-            } else {
-                Some('9')
-            }
-        }
-        0x0b => {
-            if is_shifted {
-                Some(')')
-            } else {
-                Some('0')
-            }
-        }
-        0x0c => {
-            if is_shifted {
-                Some('_')
-            } else {
-                Some('-')
-            }
-        }
-        0x0d => {
-            if is_shifted {
-                Some('+')
-            } else {
-                Some('=')
-            }
-        }
-        0x0f => Some('\t'),
-        0x10 => {
-            if is_shifted {
-                Some('Q')
-            } else {
-                Some('q')
-            }
-        }
-        0x11 => {
-            if is_shifted {
-                Some('W')
-            } else {
-                Some('w')
-            }
-        }
-        0x12 => {
-            if is_shifted {
-                Some('E')
-            } else {
-                Some('e')
-            }
-        }
-        0x13 => {
-            if is_shifted {
-                Some('R')
-            } else {
-                Some('r')
-            }
-        }
-        0x14 => {
-            if is_shifted {
-                Some('T')
-            } else {
-                Some('t')
-            }
-        }
-        0x15 => {
-            if is_shifted {
-                Some('Y')
-            } else {
-                Some('y')
-            }
-        }
-        0x16 => {
-            if is_shifted {
-                Some('U')
-            } else {
-                Some('u')
-            }
-        }
-        0x17 => {
-            if is_shifted {
-                Some('I')
-            } else {
-                Some('i')
-            }
-        }
-        0x18 => {
-            if is_shifted {
-                Some('O')
-            } else {
-                Some('o')
-            }
-        }
-        0x19 => {
-            if is_shifted {
-                Some('P')
-            } else {
-                Some('p')
-            }
-        }
-        0x1a => {
-            if is_shifted {
-                Some('{')
-            } else {
-                Some('[')
-            }
-        }
-        0x1b => {
-            if is_shifted {
-                Some('}')
-            } else {
-                Some(']')
-            }
-        }
-        0x1c => Some('\n'),
-        0x1e => {
-            if is_shifted {
-                Some('A')
-            } else {
-                Some('a')
-            }
-        }
-        0x1f => {
-            if is_shifted {
-                Some('S')
-            } else {
-                Some('s')
-            }
-        }
-        0x20 => {
-            if is_shifted {
-                Some('D')
-            } else {
-                Some('d')
-            }
-        }
-        0x21 => {
-            if is_shifted {
-                Some('F')
-            } else {
-                Some('f')
-            }
-        }
-        0x22 => {
-            if is_shifted {
-                Some('G')
-            } else {
-                Some('g')
-            }
-        }
-        0x23 => {
-            if is_shifted {
-                Some('H')
-            } else {
-                Some('h')
-            }
-        }
-        0x24 => {
-            if is_shifted {
-                Some('J')
-            } else {
-                Some('j')
-            }
-        }
-        0x25 => {
-            if is_shifted {
-                Some('K')
-            } else {
-                Some('k')
-            }
-        }
-        0x26 => {
-            if is_shifted {
-                Some('L')
-            } else {
-                Some('l')
-            }
-        }
-        0x27 => {
-            if is_shifted {
-                Some(':')
-            } else {
-                Some(';')
-            }
-        }
-        0x28 => {
-            if is_shifted {
-                Some('"')
-            } else {
-                Some('\'')
-            }
-        }
-        0x29 => {
-            if is_shifted {
-                Some('~')
-            } else {
-                Some('`')
-            }
-        }
-        0x2a => {
-            KEYBOARD.lock().is_shifted_l = true;
-            None
-        }
-        0x2b => {
-            if is_shifted {
-                Some('|')
-            } else {
-                Some('\\')
-            }
-        }
-        0x2c => {
-            if is_shifted {
-                Some('Z')
-            } else {
-                Some('z')
-            }
-        }
-        0x2d => {
-            if is_shifted {
-                Some('X')
-            } else {
-                Some('x')
-            }
-        }
-        0x2e => {
-            if is_shifted {
-                Some('C')
-            } else {
-                Some('c')
-            }
-        }
-        0x2f => {
-            if is_shifted {
-                Some('V')
-            } else {
-                Some('v')
-            }
-        }
-        0x30 => {
-            if is_shifted {
-                Some('B')
-            } else {
-                Some('b')
-            }
-        }
-        0x31 => {
-            if is_shifted {
-                Some('N')
-            } else {
-                Some('n')
-            }
-        }
-        0x32 => {
-            if is_shifted {
-                Some('M')
-            } else {
-                Some('m')
-            }
-        }
-        0x33 => {
-            if is_shifted {
-                Some('<')
-            } else {
-                Some(',')
-            }
-        }
-        0x34 => {
-            if is_shifted {
-                Some('>')
-            } else {
-                Some('.')
-            }
-        }
-        0x35 => {
-            if is_shifted {
-                Some('?')
-            } else {
-                Some('/')
-            }
-        }
-        0x36 => {
-            KEYBOARD.lock().is_shifted_r = true;
-            None
-        }
-        0x39 => Some(' '),
-        0xaa => {
-            KEYBOARD.lock().is_shifted_l = false;
-            None
-        }
-        0xb6 => {
-            KEYBOARD.lock().is_shifted_r = false;
-            None
         }
         _ => None,
     }
@@ -439,6 +221,32 @@ fn keyboard_intrrupt_handler() {
     use x86_64::instructions::port::Port;
     let mut port = Port::new(0x60);
     let scancode: u8 = unsafe { port.read() };
+
+    //change status
+    let mut keyboard = KEYBOARD.lock();
+    match scancode {
+        0x2a => {
+            keyboard.is_shifted_l = true;
+        }
+        0x36 => {
+            keyboard.is_shifted_r = true;
+        }
+        0x3a => {
+            if keyboard.is_capslock {
+                keyboard.is_capslock = false;
+            } else {
+                keyboard.is_capslock = true;
+            }
+        }
+        0xaa => {
+            keyboard.is_shifted_l = false;
+        }
+        0x36 => {
+            keyboard.is_shifted_r = false;
+        }
+        _ => {}
+    }
+
     if let Some(c) = decode(scancode) {
         KEYBOARD.lock().buffer.write(c);
     }
