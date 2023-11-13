@@ -193,6 +193,27 @@ impl KeyBoard {
         self.is_capslock
     }
 
+    fn check_status_n_change(&mut self, scancode: u8) {
+        match scancode {
+            0x2a => {
+                self.is_shifted_l = true;
+            }
+            0x36 => {
+                self.is_shifted_r = true;
+            }
+            0x3a => {
+                self.is_capslock = !self.is_capslock;
+            }
+            0xaa => {
+                self.is_shifted_l = false;
+            }
+            0x36 => {
+                self.is_shifted_r = false;
+            }
+            _ => {}
+        }
+    }
+
     fn getchar(&mut self) -> Option<char> {
         self.buffer.read()
     }
@@ -223,28 +244,10 @@ fn keyboard_intrrupt_handler() {
     let scancode: u8 = unsafe { port.read() };
 
     //change status
-    let mut keyboard = KEYBOARD.lock();
-    match scancode {
-        0x2a => {
-            keyboard.is_shifted_l = true;
-        }
-        0x36 => {
-            keyboard.is_shifted_r = true;
-        }
-        0x3a => {
-            keyboard.is_capslock = !keyboard.is_capslock;
-        }
-        0xaa => {
-            keyboard.is_shifted_l = false;
-        }
-        0x36 => {
-            keyboard.is_shifted_r = false;
-        }
-        _ => {
-            if let Some(c) = decode(scancode) {
-                KEYBOARD.lock().buffer.write(c);
-            }
-        }
+    KEYBOARD.lock().check_status_n_change(scancode);
+
+    if let Some(c) = decode(scancode) {
+        KEYBOARD.lock().buffer.write(c);
     }
 }
 
