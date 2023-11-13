@@ -232,11 +232,7 @@ fn keyboard_intrrupt_handler() {
             keyboard.is_shifted_r = true;
         }
         0x3a => {
-            if keyboard.is_capslock {
-                keyboard.is_capslock = false;
-            } else {
-                keyboard.is_capslock = true;
-            }
+            keyboard.is_capslock = !keyboard.is_capslock;
         }
         0xaa => {
             keyboard.is_shifted_l = false;
@@ -244,11 +240,11 @@ fn keyboard_intrrupt_handler() {
         0x36 => {
             keyboard.is_shifted_r = false;
         }
-        _ => {}
-    }
-
-    if let Some(c) = decode(scancode) {
-        KEYBOARD.lock().buffer.write(c);
+        _ => {
+            if let Some(c) = decode(scancode) {
+                KEYBOARD.lock().buffer.write(c);
+            }
+        }
     }
 }
 
