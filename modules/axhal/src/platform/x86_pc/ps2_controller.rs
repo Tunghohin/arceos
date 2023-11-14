@@ -24,7 +24,7 @@ impl RingBuffer {
             inner: [0; BUFFER_SIZE as usize],
         }
     }
-    fn read(&mut self) -> Option<u8> {
+    fn pop(&mut self) -> Option<u8> {
         if self.head == self.tail {
             None
         } else {
@@ -34,7 +34,7 @@ impl RingBuffer {
         }
     }
 
-    fn write(&mut self, data: u8) {
+    fn push(&mut self, data: u8) {
         let tmp_pos = (self.tail + 1) % BUFFER_SIZE;
         if tmp_pos == self.head {
             return;
@@ -94,7 +94,7 @@ impl KeyBoard {
     }
 
     fn getchar(&mut self) -> Option<u8> {
-        self.buffer.read()
+        self.buffer.pop()
     }
 }
 
@@ -231,7 +231,7 @@ fn keyboard_intrrupt_handler() {
     KEYBOARD.lock().check_status_n_change(scancode);
 
     if let Some(c) = decode(scancode) {
-        KEYBOARD.lock().buffer.write(c);
+        KEYBOARD.lock().buffer.push(c);
     }
 }
 

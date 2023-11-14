@@ -228,6 +228,10 @@ impl VgaTextMode {
                 self.current_y += 1;
             }
             b'\x08' => {
+                if self.current_x == 0 {
+                    self.current_x = VGA_BUFFER_WIDTH;
+                    self.current_y -= 1;
+                }
                 self.current_x -= 1;
                 self.buffer.chars[self.current_y][self.current_x] =
                     VgaTextChar(b' ' as u8, self.current_color);
