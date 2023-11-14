@@ -71,6 +71,7 @@ fn main() {
         match buf[cursor] {
             CR | LF => {
                 println!();
+                // println!("seefffff\b");
                 if cursor > 0 {
                     cmd::run_cmd(&buf[..cursor]);
                     cursor = 0;
@@ -79,8 +80,8 @@ fn main() {
             }
             BS | DL => {
                 if cursor > 0 {
-                    stdout.write_all(&[BS, SPACE, BS]).unwrap();
                     cursor -= 1;
+                    stdout.write_all(&[BS, SPACE, BS]).unwrap();
                 }
             }
             0..=31 => {}
