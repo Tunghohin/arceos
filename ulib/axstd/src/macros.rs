@@ -23,7 +23,6 @@ macro_rules! println {
 }
 
 // u_log: 0 for all, 1 for info, 2 for dev, 3 for debug, >=4 for none
-
 #[macro_export]
 macro_rules! pinfo {
     ($($arg:tt)*) => {

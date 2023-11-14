@@ -49,8 +49,13 @@ fn main() {
     let mut buf = [0; MAX_CMD_LEN];
     let mut cursor = 0;
 
+    #[cfg(feature = "axstd")]
     pinfo!("info test");
+
+    #[cfg(feature = "axstd")]
     pdev!("dev test");
+
+    #[cfg(feature = "axstd")]
     pdebug!("debug test");
 
     cmd::run_cmd("help".as_bytes());

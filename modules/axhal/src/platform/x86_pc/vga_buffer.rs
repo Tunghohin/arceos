@@ -7,6 +7,8 @@ use axlog::ColorCode as ConsoleColorCode;
 
 use crate::mem::PhysAddr;
 
+use crate::platform::keyboard;
+
 static VGA: SpinNoIrq<VgaTextMode> = SpinNoIrq::new(VgaTextMode::new());
 
 /// The height of the vga text buffer (normally 25 lines).
@@ -251,7 +253,7 @@ pub fn putchar(c: u8) {
 }
 
 pub fn getchar() -> Option<u8> {
-    None
+    keyboard::getchar()
 }
 
 pub(super) fn init_early() {
